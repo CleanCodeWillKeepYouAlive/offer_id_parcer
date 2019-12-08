@@ -2,27 +2,30 @@ package helpers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dao.SQLOfferDao;
+import dao.OfferDAO;
 import entities.Offer;
 
 import java.sql.SQLException;
 
 public class OfferController {
 
-    public void selectOffer(int id) {
+    public String selectOffer(int id) {
         ObjectMapper mapper = new ObjectMapper();
+        String json = null;
         try {
-            SQLOfferDao offerDAO = new SQLOfferDao();
+            OfferDAO offerDAO = new OfferDAO();
             Offer off = offerDAO.getById(id);
 
-            String jsonInString2 = mapper
+            json = mapper
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(off);
-            System.out.println(jsonInString2);
+            System.out.println(json);
 
         } catch (SQLException e) {
+            System.out.println("SQL get data problem");
         } catch (JsonProcessingException j) {
             System.out.println("Json convert problem ");
         }
+        return json;
     }
 }
