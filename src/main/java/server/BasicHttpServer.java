@@ -9,7 +9,7 @@ import java.net.URI;
 public class BasicHttpServer {
 
     public static void main(String[] args) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8002), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(8500), 0);
         HttpContext context = server.createContext("/offer/");
         context.setHandler(BasicHttpServer::handleRequest);
         server.start();
@@ -18,10 +18,13 @@ public class BasicHttpServer {
     private static void handleRequest(HttpExchange exchange) throws IOException {
         OfferController controller = new OfferController();
         URI requestURI = exchange.getRequestURI();
+
+        printRequestInfo(exchange);
         int offerId = Integer.parseInt(requestURI.toString().replaceAll(
                 "[^0-9]", ""));
 
         String response = "OFFER DATA: \n " + controller.selectOffer(offerId);
+
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());

@@ -4,9 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dao.OfferDAO;
 import entities.Offer;
-
-import java.sql.SQLException;
-
 public class OfferController {
 
     public String selectOffer(int id) {
@@ -21,8 +18,6 @@ public class OfferController {
                     .writeValueAsString(off);
             System.out.println(json);
 
-        } catch (SQLException e) {
-            System.out.println("SQL get data problem");
         } catch (JsonProcessingException j) {
             System.out.println("Json convert problem ");
         }
