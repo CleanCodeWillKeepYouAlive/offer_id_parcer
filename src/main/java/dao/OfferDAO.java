@@ -75,7 +75,6 @@ public class OfferDAO extends AbstractDAO<Offer> {
         return list;
     }
 
-
     @Override
     public void insert(Offer dat) {
 
