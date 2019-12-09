@@ -46,7 +46,6 @@ public class OfferDAO extends AbstractDAO<Offer> {
        return null;
     }
 
-
     @Override
     public List<Offer> getAll() {
         List<Offer> list = new ArrayList<>();
