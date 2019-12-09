@@ -1,28 +1,27 @@
 package dao;
 
+import JDBCDataSource.DataSourceFactory;
 import entities.Offer;
-import factory.ConnectionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+public class OfferDAO implements DAO<Offer> {
 
-public class OfferDAO extends AbstractDAO<Offer> {
-
+    final Logger logger = LogManager.getLogger(OfferDAO.class);
+    DataSource ds = DataSourceFactory.getDataSource("mysql");
     private final static String SELECT_CERTAIN_OFFER = "SELECT offer_id, offer_name, offer_status_id," +
             "vertical_id, advertiser_id, default_offer_contract_id, offer_type_id," +
             "currency_id, is_hidden, deleted  FROM offer WHERE offer_id = ?";
     private final static String SELECT_ALL_OFFERS = "select * from offer";
 
-    private Connection getConnection() throws SQLException {
-        Connection conn;
-        conn = ConnectionFactory.getInstance().getConnection();
-        return conn;
-    }
 
     @Override
     public Offer getById(int id) {
-        try(Connection connection = getConnection();
-                PreparedStatement stm = connection.prepareStatement(SELECT_CERTAIN_OFFER)) {
+        try(Connection connection = ds.getConnection();
+            PreparedStatement stm = connection.prepareStatement(SELECT_CERTAIN_OFFER)) {
             stm.setInt(1, id);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
@@ -41,7 +40,7 @@ public class OfferDAO extends AbstractDAO<Offer> {
                 }
             }
         }catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Some sql exception were catch" ,e);
         }
        return null;
     }
@@ -49,11 +48,11 @@ public class OfferDAO extends AbstractDAO<Offer> {
     @Override
     public List<Offer> getAll() {
         List<Offer> list = new ArrayList<>();
-        try (Connection connection = getConnection();
+        try (Connection connection = ds.getConnection();
              PreparedStatement stm = connection.prepareStatement(SELECT_ALL_OFFERS);
              ResultSet rs = stm.executeQuery()) {
 
-            while (rs.next()) {
+            if (rs.next()) {
                 Offer offer = new Offer();
                 offer.setOfferId(rs.getInt("offer_id"));
                 offer.setOfferName(rs.getString("offer_name"));
@@ -69,7 +68,7 @@ public class OfferDAO extends AbstractDAO<Offer> {
                 list.add(offer);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Some sql exception were catch" ,e);
         }
         return list;
     }

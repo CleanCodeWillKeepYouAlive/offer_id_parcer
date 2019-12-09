@@ -2,11 +2,15 @@ package server;
 
 import com.sun.net.httpserver.*;
 import helpers.OfferController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 public class BasicHttpServer {
+
+    private static Logger logger = LogManager.getLogger(BasicHttpServer.class);
 
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(8500), 0);
@@ -32,21 +36,21 @@ public class BasicHttpServer {
     }
 
     private static void printRequestInfo(HttpExchange exchange) {
-        System.out.println("-- headers --");
+        logger.info("-- headers --");
         Headers requestHeaders = exchange.getRequestHeaders();
         requestHeaders.entrySet().forEach(System.out::println);
 
-        System.out.println("-- principle --");
+        logger.info("-- principle --");
         HttpPrincipal principal = exchange.getPrincipal();
-        System.out.println(principal);
+        logger.info(principal);
 
-        System.out.println("-- HTTP method --");
+        logger.info("-- HTTP method --");
         String requestMethod = exchange.getRequestMethod();
-        System.out.println(requestMethod);
+        logger.info(requestMethod);
 
-        System.out.println("-- query --");
+        logger.info("-- query --");
         URI requestURI = exchange.getRequestURI();
         String query = requestURI.getQuery();
-        System.out.println(query);
+        logger.info(query);
     }
 }
