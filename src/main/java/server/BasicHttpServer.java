@@ -11,6 +11,7 @@ import java.net.URI;
 public class BasicHttpServer {
 
     private static Logger logger = LogManager.getLogger(BasicHttpServer.class);
+    private static OfferController controller;
 
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(8500), 0);
@@ -20,7 +21,6 @@ public class BasicHttpServer {
     }
 
     private static void handleRequest(HttpExchange exchange) throws IOException {
-        OfferController controller = new OfferController();
         URI requestURI = exchange.getRequestURI();
 
         printRequestInfo(exchange);

@@ -1,17 +1,18 @@
 package JDBCDataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Properties;
 import javax.sql.DataSource;
-import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DataSourceFactory {
     private static Logger logger = LogManager.getLogger(DataSourceFactory.class);
     public static DataSource getDataSource(String dbType) {
-
 
         Properties props = new Properties();
         BasicDataSource ds = new BasicDataSource();
@@ -35,6 +36,11 @@ public class DataSourceFactory {
                 ds.setUrl(props.getProperty("CH_DB_URL"));
                 ds.setUsername(props.getProperty("CH_DB_USERNAME"));
                 ds.setPassword(props.getProperty("CH_DB_PASSWORD"));
+            }else if("home".equals(dbType)) {
+                ds.setDriverClassName(props.getProperty("HOME_DB_DRIVER_CLASS"));
+                ds.setUrl(props.getProperty("HOME_DB_URL"));
+                ds.setUsername(props.getProperty("HOME_DB_USERNAME"));
+                ds.setPassword(props.getProperty("HOME_DB_PASSWORD"));
             } else {
                 return  null;
             }
@@ -42,23 +48,27 @@ public class DataSourceFactory {
     }
 
     private static void testDBDataSource(String dbType, int id) {
-        String select = "select offer_name from offer where = ?";
         DataSource ds = DataSourceFactory.getDataSource(dbType);
+        String select = "select offerName from offer where = ?";
 
-        try (Connection con = ds.getConnection();
-             PreparedStatement stm = con.prepareStatement(select);
+        try (Connection conn = ds.getConnection();
+             PreparedStatement stm = conn.prepareStatement(select);
              ResultSet rs = stm.executeQuery()) {
              stm.setInt(1, id);
 
              if (rs.next()) {
                 System.out.println("OFFER_ID="
-                        + rs.getInt("offer_id")
-                        + ", OFFER_NAME=" + rs.getString("offer_name"));
+                        + rs.getInt("Id")
+                        + ", OFFER_NAME=" + rs.getString("offerName"));
             }
-
-        } catch (Exception e) {
+        } catch ( Exception e) {
             logger.error("Some error while test" , e);
+            e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        testDBDataSource("home",2);
     }
 }
 

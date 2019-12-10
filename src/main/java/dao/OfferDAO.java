@@ -11,7 +11,7 @@ import java.util.List;
 public class OfferDAO implements DAO<Offer> {
 
     final Logger logger = LogManager.getLogger(OfferDAO.class);
-    DataSource ds = DataSourceFactory.getDataSource("mysql");
+    DataSource ds = DataSourceFactory.getDataSource("home");
     private final static String SELECT_CERTAIN_OFFER = "SELECT offer_id, offer_name, offer_status_id," +
             "vertical_id, advertiser_id, default_offer_contract_id, offer_type_id," +
             "currency_id, is_hidden, deleted  FROM offer WHERE offer_id = ?";
@@ -40,7 +40,7 @@ public class OfferDAO implements DAO<Offer> {
                 }
             }
         }catch (SQLException e) {
-            logger.error("Some sql exception were catch" ,e);
+            logger.error("Some sql exception were catch", e);
         }
        return null;
     }
@@ -64,7 +64,6 @@ public class OfferDAO implements DAO<Offer> {
                 offer.setCurrecnyId(rs.getInt("currency_id"));
                 offer.setIsHidden(rs.getInt("is_hidden"));
                 offer.setDeleted(rs.getInt("deleted"));
-
                 list.add(offer);
             }
         } catch (SQLException e) {
