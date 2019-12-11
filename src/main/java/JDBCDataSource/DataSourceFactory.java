@@ -1,29 +1,32 @@
 package JDBCDataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 import javax.sql.DataSource;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DataSourceFactory {
     private static Logger logger = LogManager.getLogger(DataSourceFactory.class);
+
     public static DataSource getDataSource(String dbType) {
 
-        Properties props = new Properties();
         BasicDataSource ds = new BasicDataSource();
-        FileInputStream fis = null;
+        Properties props = new Properties();
 
-            try{
-                fis = new FileInputStream("database.properties");
-                props.load(fis);
+            try (InputStream is = DataSourceFactory.class.getClassLoader()
+                    .getResourceAsStream("database.properties")) {
+                props.load(is);
+
             }catch (IOException e) {
                 logger.info("Cannot read from database properties");
-                return null;
+
             }
 
             if("mysql".equals(dbType)) {
@@ -42,33 +45,34 @@ public class DataSourceFactory {
                 ds.setUsername(props.getProperty("HOME_DB_USERNAME"));
                 ds.setPassword(props.getProperty("HOME_DB_PASSWORD"));
             } else {
-                return  null;
+                return null;
             }
             return ds;
     }
 
     private static void testDBDataSource(String dbType, int id) {
         DataSource ds = DataSourceFactory.getDataSource(dbType);
-        String select = "select offerName from offer where = ?";
+        String select = "select offer_id, offer_name from offer where offer_id = 2018";
 
         try (Connection conn = ds.getConnection();
              PreparedStatement stm = conn.prepareStatement(select);
              ResultSet rs = stm.executeQuery()) {
-             stm.setInt(1, id);
 
-             if (rs.next()) {
-                System.out.println("OFFER_ID="
-                        + rs.getInt("Id")
-                        + ", OFFER_NAME=" + rs.getString("offerName"));
-            }
-        } catch ( Exception e) {
-            logger.error("Some error while test" , e);
+
+                if (rs.next()) {
+                    System.out.println("OFFER_ID="
+                            + rs.getInt("offer_id")
+                            + ", OFFER_NAME=" + rs.getString("offer_name"));
+                }
+
+        } catch (Exception e) {
+            logger.error("Some error while test", e);
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        testDBDataSource("home",2);
+       testDBDataSource("mysql",2018);
     }
 }
 
