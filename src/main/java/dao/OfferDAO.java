@@ -67,7 +67,7 @@ public class OfferDAO implements DAO<Offer> {
                 list.add(offer);
             }
         } catch (SQLException e) {
-            logger.error("Some sql exception were catch" ,e);
+            logger.error("Some sql exception were catch", e);
         }
         return list;
     }

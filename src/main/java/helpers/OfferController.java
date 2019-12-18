@@ -8,19 +8,22 @@ import org.apache.logging.log4j.Logger;
 import server.BasicHttpServer;
 
 public class OfferController {
-    private static Logger logger = LogManager.getLogger(BasicHttpServer.class);
-    private ObjectMapper mapper;
-    private OfferDAO offerDAO;
-    String json = null;
+
+    private static Logger logger = LogManager.getLogger(OfferController.class);
+    private OfferDAO offerDAO = new OfferDAO();
+    private ObjectMapper mapper = new ObjectMapper();
+    private String json = null;
 
     public String selectOffer(int id) {
-        try { json = mapper
+        try {
+            json = mapper
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(offerDAO.getById(id));
            logger.info(json);
 
         } catch (JsonProcessingException j) {
-            System.out.println("Json convert problem ");
+           logger.error("Json convert problem ", j);
+           return offerDAO.getById(id).toString();
         }
         return json;
     }

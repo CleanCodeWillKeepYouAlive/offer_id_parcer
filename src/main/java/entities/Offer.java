@@ -113,17 +113,16 @@ public class Offer implements Serializable {
     @Override
     public String toString() {
         return "Offer{" +
-                "offerId=" + offerId +
-                ", advertiserId=" + advertiserId +
-                ", verticalId=" + verticalId +
-                ", defaultOfferContractId=" + defaultOfferContractId +
-                ", offerTypeId=" + offerTypeId +
-                ", offerStatusId=" + offerStatusId +
-                ", isHidden=" + isHidden +
-                ", currencyId=" + currencyId +
+                "offer_id=" + offerId +
+                ", advertiser_id=" + advertiserId +
+                ", vertical_id=" + verticalId +
+                ", default_offer_contract_id=" + defaultOfferContractId +
+                ", offer_type_id=" + offerTypeId +
+                ", offer_status_id=" + offerStatusId +
+                ", is_hidden=" + isHidden +
+                ", currency_id=" + currencyId +
                 ", deleted=" + deleted +
-                ", offerName='" + offerName + '\'' +
-                '}';
+                ", offer_name=" + offerName + "\n}";
     }
 }
 

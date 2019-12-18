@@ -1,5 +1,6 @@
 package server;
 
+
 import com.sun.net.httpserver.*;
 import helpers.OfferController;
 import org.apache.logging.log4j.LogManager;
@@ -9,12 +10,11 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 public class BasicHttpServer {
-
     private static Logger logger = LogManager.getLogger(BasicHttpServer.class);
-    private static OfferController controller;
+    private static OfferController offerController = new OfferController();
 
     public static void main(String[] args) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8500), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(8001), 0);
         HttpContext context = server.createContext("/offer/");
         context.setHandler(BasicHttpServer::handleRequest);
         server.start();
@@ -22,12 +22,11 @@ public class BasicHttpServer {
 
     private static void handleRequest(HttpExchange exchange) throws IOException {
         URI requestURI = exchange.getRequestURI();
-
-        printRequestInfo(exchange);
         int offerId = Integer.parseInt(requestURI.toString().replaceAll(
                 "[^0-9]", ""));
 
-        String response = "OFFER DATA: \n " + controller.selectOffer(offerId);
+        String response = "Selected offer data: \n "
+                + offerController.selectOffer(offerId);
 
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();

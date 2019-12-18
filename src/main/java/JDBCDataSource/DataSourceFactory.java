@@ -1,13 +1,14 @@
 package JDBCDataSource;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Properties;
+import javax.management.remote.rmi._RMIConnection_Stub;
 import javax.sql.DataSource;
+
+import helpers.OfferController;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 public class DataSourceFactory {
     private static Logger logger = LogManager.getLogger(DataSourceFactory.class);
 
-    public static DataSource getDataSource(String dbType) {
+    public static DataSource getDataSource(String dbType)  {
 
         BasicDataSource ds = new BasicDataSource();
         Properties props = new Properties();
@@ -50,19 +51,26 @@ public class DataSourceFactory {
             return ds;
     }
 
-    private static void testDBDataSource(String dbType, int id) {
+    private static void testDBDataSource(String dbType, int id)  {
         DataSource ds = DataSourceFactory.getDataSource(dbType);
-        String select = "select offer_id, offer_name from offer where offer_id = 2018";
+        String query = "select * from offer where offer_id = '1'";
 
         try (Connection conn = ds.getConnection();
-             PreparedStatement stm = conn.prepareStatement(select);
+             PreparedStatement stm = conn.prepareStatement(query);
              ResultSet rs = stm.executeQuery()) {
 
-
                 if (rs.next()) {
-                    System.out.println("OFFER_ID="
-                            + rs.getInt("offer_id")
-                            + ", OFFER_NAME=" + rs.getString("offer_name"));
+                    System.out.println("Offer data: " +
+                            "\noffer_id= " + rs.getInt("offer_id")+
+                            "\noffer_name= " + rs.getString("offer_name") +
+                            "\noffer_status_id= " +  rs.getInt("offer_status_id") +
+                            "\nvertical_id= " + rs.getInt("vertical_id") +
+                            "\nadvertiser_id= " + rs.getInt("advertiser_id") +
+                            "\ndefault_offer_contract_id= " + rs.getInt("default_offer_contract_id") +
+                            "\noffer_type_id= " + rs.getInt("offer_type_id") +
+                            "\ncurrency_id= " +  rs.getInt("currency_id") +
+                            "\nis_hidden= " + rs.getInt("is_hidden") +
+                            "\ndeleted= " + rs.getInt("deleted"));
                 }
 
         } catch (Exception e) {
@@ -72,7 +80,7 @@ public class DataSourceFactory {
     }
 
     public static void main(String[] args) {
-       testDBDataSource("mysql",2018);
+        testDBDataSource("home",1);
     }
 }
 
