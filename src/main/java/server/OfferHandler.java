@@ -9,12 +9,10 @@ import java.io.OutputStream;
 
 public class OfferHandler implements HttpHandler {
 
-    OfferController controller =  new OfferController();
-
+    OfferController controller = new OfferController();
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-
         String response = controller.doAction(new RequestWrapper(httpExchange));
         httpExchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = httpExchange.getResponseBody();

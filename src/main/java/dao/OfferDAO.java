@@ -11,6 +11,7 @@ import java.util.List;
 public class OfferDAO implements DAO<Offer> {
 
     final Logger logger = LogManager.getLogger(OfferDAO.class);
+
     DataSource ds = DataSourceFactory.getDataSource("home");
     private final static String SELECT_CERTAIN_OFFER = "SELECT offer_id, offer_name, offer_status_id," +
             "vertical_id, advertiser_id, default_offer_contract_id, offer_type_id," +

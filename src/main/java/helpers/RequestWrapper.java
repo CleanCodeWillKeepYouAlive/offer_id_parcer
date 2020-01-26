@@ -5,12 +5,12 @@ import java.net.URI;
 
 public class RequestWrapper {
 
+    private int offerId;
+    private HttpExchange exchange;
+
     public int getOfferId() {
         return offerId;
     }
-
-    private int offerId;
-    private HttpExchange exchange;
 
     public RequestWrapper(HttpExchange exchange) {
         this.exchange = exchange;
@@ -29,5 +29,4 @@ public class RequestWrapper {
             return defaultValue;
         }
     }
-
 }

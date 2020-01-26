@@ -1,9 +1,7 @@
 package server;
 import com.sun.net.httpserver.*;
-import helpers.OfferService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -19,6 +17,21 @@ public class BasicHttpServer {
         init();
     }
 
+    private void init() {
+        final ExecutorService ex = Executors.newSingleThreadExecutor();
+        server.createContext("/offer/", new OfferHandler());
+        server.setExecutor(ex);
+    }
+
+    public void start() {
+        server.start();
+        logger.info("HTTP server started!");
+    }
+
+    public void stop() {
+        server.stop(1);
+        logger.info("HTTP server stop!");
+    }
 
     private static void printRequestInfo(HttpExchange exchange) {
         logger.info("-- headers --");
@@ -37,21 +50,5 @@ public class BasicHttpServer {
         URI requestURI = exchange.getRequestURI();
         String query = requestURI.getQuery();
         logger.info(query);
-    }
-
-
-    private void init() {
-        final ExecutorService ex = Executors.newSingleThreadExecutor();
-        server.createContext("/offer/", new OfferHandler());
-        server.setExecutor(ex);
-    }
-
-    public void start() {
-        server.start();
-        System.out.println("HTTP server started");
-    }
-
-    public void stop() {
-        server.stop(1);
     }
 }
